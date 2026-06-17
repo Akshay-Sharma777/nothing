@@ -1,0 +1,991 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Donation Portal - MyPustak Inspired</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<style>
+  :root {
+    --primary: #1976d2;
+    --secondary: #43a047;
+    --bg-light: #f9fbfd;
+    --card-bg: #fff;
+    --shadow: 0 2px 12px rgba(30,60,90,0.1);
+    --radius: 16px;
+    --transition: 0.2s;
+    --font-main: 'Segoe UI', 'Roboto', 'Arial', sans-serif;
+  }
+  body {
+    margin: 0; font-family: var(--font-main); background: var(--bg-light); color: #1a1a1a; min-height: 100vh; display: flex; flex-direction: column;
+  }
+  header {
+    background: var(--primary);
+    color: white;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 12000;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .logo { font-weight: 700; font-size: 1.6rem; letter-spacing: 1.2px; }
+  nav {
+    display: flex;
+    gap: 1.8rem;
+    flex-wrap: nowrap;
+    flex-grow: 1;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  nav::-webkit-scrollbar {
+    display: none;
+  }
+  nav a, nav button {
+    color: white; 
+    font-weight: 600; 
+    font-size: 1rem; 
+    text-decoration: none; 
+    cursor: pointer; 
+    background: none; 
+    border: none; 
+    padding: 0; 
+    outline: none;
+    white-space: nowrap;
+    background: var(--primary);
+    /* Add background color on all buttons and links */
+  }
+  nav a:hover, nav a.active, nav button:hover, nav button:focus {
+    color: var(--secondary); 
+    border-bottom: 2px solid var(--secondary); 
+    padding-bottom: 3px;
+  }
+  main { max-width: 960px; margin: 2rem auto 4rem; padding: 0 1rem; flex-grow: 1; }
+  .hero-section {
+    background: linear-gradient(100deg, #e3f2fd 0%, #e8f5e9 100%);
+    border-radius: var(--radius);
+    padding: 3rem 2rem;
+    box-shadow: var(--shadow);
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+  .hero-section h1 {
+    color: var(--secondary);
+    font-size: 2.6rem;
+    font-weight: 700;
+    margin-bottom: 0.7rem;
+    text-shadow: 0 1px 5px rgba(30,90,90,0.08);
+  }
+  .hero-section p {
+    font-size: 1.3rem;
+    font-weight: 600;
+    max-width: 650px;
+    margin: 0 auto 2rem;
+    color: #222;
+    user-select: none;
+  }
+  .btn-main {
+    background: var(--primary);
+    color: white;
+    padding: 1.1rem 2.5rem;
+    font-size: 1.3rem;
+    font-weight: 600;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    border: none;
+    cursor: pointer;
+    user-select: none;
+    transition: background var(--transition), transform var(--transition);
+  }
+  .btn-main:hover, .btn-main:focus {
+    background: var(--secondary);
+    transform: scale(1.05);
+    outline: none;
+  }
+  .page-section {
+    display: none;
+    animation: fadeIn 0.35s ease forwards;
+  }
+  .page-section.active {
+    display: block;
+  }
+  @keyframes fadeIn { from {opacity: 0.3;} to {opacity: 1;} }
+
+  /* Form styles */
+  .form-card {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 2rem 1.5rem 1.5rem;
+    max-width: 520px;
+    margin: 2rem auto 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.3rem;
+  }
+  .form-card h2 {
+    color: var(--primary);
+    font-size: 1.5rem;
+    text-align: center;
+    font-weight: 700;
+    user-select: none;
+  }
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+  .form-group label {
+    color: #444;
+    font-weight: 600;
+    user-select: none;
+  }
+  .form-group input, .form-group select, .form-group textarea {
+    padding: 0.6rem 1rem;
+    font-family: var(--font-main);
+    font-size: 1.05rem;
+    border-radius: 8px;
+    border: 1.5px solid #c4e2fd;
+    background: #f7fbff;
+    outline: none;
+    transition: border var(--transition);
+  }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+    border-color: var(--primary);
+  }
+  .form-group textarea {
+    resize: vertical;
+    min-height: 70px;
+  }
+  .form-card button, .form-card input[type="submit"] {
+    background: var(--secondary);
+    color: white;
+    padding: 0.85rem 2rem;
+    font-weight: 700;
+    font-size: 1.1rem;
+    border-radius: var(--radius);
+    border: none;
+    cursor: pointer;
+    box-shadow: var(--shadow);
+    align-self: center;
+    margin-top: 1.5rem;
+    transition: background var(--transition), transform var(--transition);
+  }
+  .form-card button:hover, .form-card button:focus, .form-card input[type="submit"]:hover, .form-card input[type="submit"]:focus {
+    background: var(--primary);
+    transform: scale(1.05);
+    outline: none;
+  }
+
+  /* Listings tabs and cards */
+  .listings-tabs {
+    max-width: 720px;
+    margin: 0 auto 1rem;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+  }
+  .listings-tabs button {
+    background: transparent;
+    border: none;
+    padding: 0.8rem 1.4rem;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--primary);
+    border-bottom: 3px solid transparent;
+    transition: border-color 0.2s;
+  }
+  .listings-tabs button.active, .listings-tabs button:hover {
+    border-bottom: 3px solid var(--secondary);
+    color: var(--secondary);
+  }
+  .listing-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.8rem;
+    justify-content: center;
+  }
+  .donation-card {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 1.1rem 1rem 1.4rem 1rem;
+    width: 260px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    transition: box-shadow var(--transition), transform var(--transition);
+  }
+  .donation-card:hover, .donation-card:focus-within {
+    box-shadow: 0 6px 32px rgba(30,60,90,0.18);
+    transform: translateY(-3px) scale(1.03);
+    outline: none;
+  }
+  .donation-card .item-img {
+    width: 88px;
+    height: 88px;
+    border-radius: 50%;
+    object-fit: cover;
+    background: #e3f2fd;
+    border: 2px solid #e8f5e9;
+    margin-bottom: 0.3rem;
+  }
+  .donation-card h4 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: var(--primary);
+    font-weight: 700;
+    text-align: center;
+  }
+  .donation-details {
+    font-size: 0.98rem;
+    color: #333;
+    text-align: center;
+    line-height: 1.5;
+  }
+  .donation-card button {
+    padding: 0.55rem 1.3rem;
+    font-size: 1rem;
+    border-radius: 12px;
+    margin-top: 0.3rem;
+    box-shadow: none;
+    cursor: pointer;
+    background: var(--primary);
+    color: white;
+    border: none;
+    transition: background 0.3s;
+  }
+  .donation-card button:hover {
+    background: var(--secondary);
+  }
+
+  /* Browse books */
+  .browse-section {
+    max-width: 900px;
+    margin: 2rem auto;
+    padding: 1rem;
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+  }
+  .browse-section h2 {
+    color: var(--primary);
+    text-align: center;
+    margin-bottom: 1rem;
+    font-weight: 700;
+  }
+  .browse-filters {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 1rem;
+  }
+  .browse-filters input[type="search"],
+  .browse-filters select {
+    padding: 0.6rem 1rem;
+    border-radius: 10px;
+    border: 1.5px solid #c4e2fd;
+    font-size: 1rem;
+    width: 220px;
+    max-width: 100%;
+    background: #f7fbff;
+    outline: none;
+    transition: border 0.2s;
+  }
+  .browse-filters input[type="search"]:focus,
+  .browse-filters select:focus {
+    border-color: var(--primary);
+  }
+
+  /* Profile, testimonials and impact */
+  .profile-section,
+  .testimonials-section,
+  .impact-section,
+  #orders,
+  #donations,
+  #logout,
+  #cart {
+    max-width: 900px;
+    margin: 2rem auto;
+    padding: 1.8rem;
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    text-align: center;
+  }
+  .profile-section h2,
+  .testimonials-section h2,
+  .impact-section h2,
+  #orders h2,
+  #donations h2,
+  #logout h2,
+  #cart h2 {
+    color: var(--primary);
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+  .profile-section button,
+  #orders button,
+  #donations button,
+  #logout button,
+  #cart button {
+    margin: 0.6rem 0.7rem;
+    padding: 0.75rem 2rem;
+    font-weight: 600;
+    border-radius: var(--radius);
+    border: none;
+    background: var(--primary);
+    color: white;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .profile-section button:hover,
+  #orders button:hover,
+  #donations button:hover,
+  #logout button:hover,
+  #cart button:hover {
+    background: var(--secondary);
+  }
+  .testimonials-section p {
+    font-style: italic;
+    font-size: 1.1rem;
+    margin: 0.6rem 0;
+    color: #444;
+  }
+  .impact-section p {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #2a7a35;
+  }
+
+  /* Footer styles */
+  footer {
+    background: var(--card-bg);
+    box-shadow: var(--shadow);
+    border-radius: var(--radius) var(--radius) 0 0;
+    padding: 2rem 1rem 3rem 1rem;
+    text-align: center;
+    margin-top: auto;
+    font-size: 1rem;
+  }
+  .footer-links {
+    margin-bottom: 1.8rem;
+    display: flex;
+    justify-content: center;
+    gap: 2.5rem;
+    flex-wrap: wrap;
+  }
+  .footer-links a {
+    text-decoration: none;
+    color: #444;
+    font-weight: 600;
+    padding: 0 10px;
+    transition: color 0.25s;
+  }
+  .footer-links a:hover,
+  .footer-links a:focus {
+    color: var(--primary);
+    outline: none;
+  }
+  .footer-social {
+    display: flex;
+    gap: 1.6rem;
+    justify-content: center;
+    font-size: 1.5rem;
+  }
+  .footer-social .icon {
+    width: 34px;
+    height: 34px;
+    background: #e3f2fd;
+    border-radius: 50%;
+    color: var(--primary);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: background var(--transition);
+  }
+  .footer-social .icon:hover,
+  .footer-social .icon:focus {
+    background: var(--primary);
+    color: white;
+    outline: none;
+  }
+  .footer-copy {
+    color: #90a4ae;
+    font-size: 0.99rem;
+    margin-top: 1.4rem;
+    letter-spacing: 0.04em;
+  }
+
+  /* Modal */
+  .modal {
+    position: fixed;
+    z-index: 11500;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    display: none;
+    align-items: center;
+    justify-content: center;
+  }
+  .modal.active {
+    display: flex;
+  }
+  .modal-content {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 2.5rem 2rem;
+    max-width: 450px;
+    width: 90%;
+    position: relative;
+  }
+  .close {
+    position: absolute;
+    top: 1rem;
+    right: 1.2rem;
+    font-size: 2.5rem;
+    color: #999;
+    cursor: pointer;
+    user-select: none;
+  }
+  .close:hover,
+  .close:focus {
+    color: var(--primary);
+    outline: none;
+  }
+  .modal-content h2 {
+    color: var(--primary);
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+  .modal-content form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .modal-content label {
+    font-weight: 600;
+    color: #444;
+  }
+  .modal-content input,
+  .modal-content textarea {
+    padding: 0.6rem 1rem;
+    font-size: 1rem;
+    border-radius: 8px;
+    border: 1.5px solid #c4e2fd;
+    outline: none;
+    transition: border 0.2s;
+    font-family: var(--font-main);
+  }
+  .modal-content textarea {
+    resize: vertical;
+    min-height: 70px;
+  }
+  .modal-content input:focus,
+  .modal-content textarea:focus {
+    border-color: var(--primary);
+  }
+  .modal-content button.btn-main {
+    font-weight: 700;
+    font-size: 1.1rem;
+    padding: 0.9rem 0;
+    width: 100%;
+  }
+  .switch-link {
+    text-align: center;
+    margin-top: 1rem;
+    user-select: none;
+  }
+  .switch-link a {
+    color: var(--primary);
+    cursor: pointer;
+    text-decoration: underline;
+  }
+  .switch-link a:hover,
+  .switch-link a:focus {
+    color: var(--secondary);
+    outline: none;
+  }
+
+  /* Responsive */
+  @media (max-width: 720px) {
+    header, main { padding: 0.7rem 1rem; }
+    .listing-list { flex-direction: column; align-items: center; }
+    nav { gap: 1rem; }
+  }
+  @media (max-width: 400px) {
+    .donation-card, .form-card { width: 90vw; }
+    .browse-filters { flex-direction: column; gap: 1rem; }
+    .browse-filters input[type="search"], .browse-filters select { width: 100%; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <span class="logo" tabindex="0">Donation Portal</span>
+  <nav>
+    <a href="#home" class="active" role="button" tabindex="0" onclick="showSection('home', event)">Home</a>
+    <a href="javascript:void(0)" role="button" tabindex="0" onclick="showSection('donate', event)">Donate</a>
+    <a href="javascript:void(0)" role="button" tabindex="0" onclick="showSection('request', event)">Request</a>
+    <a href="javascript:void(0)" role="button" tabindex="0" onclick="showSection('listings', event)">Listings</a>
+    <a href="javascript:void(0)" role="button" tabindex="0" onclick="showSection('browse', event)">Browse Books</a>
+    <a href="javascript:void(0)" role="button" tabindex="0" onclick="showSection('profile', event)">My Account</a>
+    <a href="javascript:void(0)" role="button" tabindex="0" onclick="showSection('reviews', event)">Testimonials</a>
+    <a href="javascript:void(0)" role="button" tabindex="0" onclick="showSection('impact', event)">Impact</a>
+    <a href="#about" role="button" tabindex="0" onclick="showSection('about', event)">About</a>
+    <a href="#contact" role="button" tabindex="0" onclick="showSection('contact', event)">Contact</a>
+    <a href="javascript:void(0)" role="button" tabindex="0" onclick="showSection('cart', event)">Cart</a>
+    <button id="loginBtn" role="button" tabindex="0" style="color: white; font-weight: 700; background: var(--primary);">Login</button>
+  </nav>
+</header>
+
+<main>
+  <section id="home" class="page-section active" tabindex="-1">
+    <div class="hero-section">
+      <h1>Donate & Share – Empower Students, Enrich Society</h1>
+      <p class="tagline">Connect with a caring community ready to give and receive. Donate books, gadgets, clothes, and more to uplift students and society. Together, let’s reduce waste and spread hope.</p>
+      <button class="btn-main" onclick="showSection('donate', event)">Start Donating</button>
+    </div>
+  </section>
+
+  <section id="donate" class="page-section" tabindex="-1">
+    <form class="form-card" novalidate onsubmit="submitDonation(event)">
+      <h2>Donation Form</h2>
+      <div class="form-group"><label for="donor-name">Name</label><input required id="donor-name" name="donor-name" type="text" /></div>
+      <div class="form-group"><label for="donor-email">Email</label><input required id="donor-email" name="donor-email" type="email" /></div>
+      <div class="form-group"><label for="item-name">Item Name</label><input required id="item-name" name="item-name" type="text" placeholder="E.g. Laptop" /></div>
+      <div class="form-group"><label for="item-category">Category</label><select required id="item-category" name="item-category"><option>Books</option><option>Clothes</option><option>Gadgets</option><option>Mobile Phones</option><option>Other</option></select></div>
+      <div class="form-group"><label for="item-condition">Condition</label><select required id="item-condition" name="item-condition"><option>New</option><option>Good</option><option>Used</option></select></div>
+      <div class="form-group"><label for="paid-option">For Sale?</label><select required id="paid-option" name="paid-option" onchange="togglePriceInput(event)"><option value="donated">No (Donate)</option><option value="paid">Yes (Sale)</option></select></div>
+      <div class="form-group" id="price-group" style="display:none;"><label for="item-price">Price (USD)</label><input id="item-price" name="item-price" type="number" min="0" step="0.01" /></div>
+      <button type="submit">Submit Donation</button>
+    </form>
+  </section>
+
+  <section id="request" class="page-section" tabindex="-1">
+    <form class="form-card" novalidate onsubmit="submitRequest(event)">
+      <h2>Request Form</h2>
+      <div class="form-group"><label for="req-name">Name</label><input required id="req-name" name="req-name" type="text" /></div>
+      <div class="form-group"><label for="req-email">Email</label><input required id="req-email" name="req-email" type="email" /></div>
+      <div class="form-group"><label for="req-item">Item Needed</label><input required id="req-item" name="req-item" type="text" placeholder="E.g. Textbook" /></div>
+      <div class="form-group"><label for="req-category">Category</label><select required id="req-category" name="req-category"><option>Books</option><option>Clothes</option><option>Gadgets</option><option>Mobile Phones</option><option>Other</option></select></div>
+      <div class="form-group"><label for="req-desc">Description</label><textarea required id="req-desc" name="req-desc" rows="3" placeholder="Additional details"></textarea></div>
+      <button type="submit">Submit Request</button>
+    </form>
+  </section>
+
+  <section id="listings" class="page-section" tabindex="-1">
+    <div class="listings-tabs" role="tablist" aria-label="Listing Tabs">
+      <button id="tabDonated" class="active" aria-selected="true" role="tab" aria-controls="donatedItems" tabindex="0">Donated Items</button>
+      <button id="tabPaid" aria-selected="false" role="tab" aria-controls="paidItems" tabindex="0">Paid Items</button>
+    </div>
+    <div id="donatedItems" class="listing-list" role="tabpanel" aria-labelledby="tabDonated" style="display:flex;">
+      <article class="donation-card" tabindex="0"><img src="https://img.icons8.com/color/96/book--v1.png" alt="Calculus Textbook" class="item-img" />
+        <h4>Calculus Textbook</h4>
+        <p class="donation-details">Category: Books<br>Condition: Good</p>
+        <button class="btn-main" onclick="openRequestInfoModal('Calculus Textbook', false)">Request Item</button></article>
+      <article class="donation-card" tabindex="0"><img src="https://img.icons8.com/color/96/t-shirt--v1.png" alt="Winter Jacket" class="item-img" />
+        <h4>Winter Jacket</h4>
+        <p class="donation-details">Category: Clothes<br>Condition: New</p>
+        <button class="btn-main" onclick="openRequestInfoModal('Winter Jacket', false)">Request Item</button></article>
+      <article class="donation-card" tabindex="0"><img src="https://img.icons8.com/color/96/phone-tablet.png" alt="Used Mobile Phone" class="item-img" />
+        <h4>Used Mobile Phone</h4>
+        <p class="donation-details">Category: Mobile Phones<br>Condition: Used</p>
+        <button class="btn-main" onclick="openRequestInfoModal('Used Mobile Phone', false)">Request Item</button></article>
+    </div>
+    <div id="paidItems" class="listing-list" role="tabpanel" aria-labelledby="tabPaid" style="display:none;">
+      <article class="donation-card" tabindex="0"><img src="https://img.icons8.com/color/96/laptop--v1.png" alt="Dell Laptop" class="item-img" />
+        <h4>Dell Laptop</h4>
+        <p class="donation-details">Category: Gadgets<br>Condition: Used<br><strong>Price: $550</strong></p>
+        <button class="btn-main" onclick="openRequestInfoModal('Dell Laptop', true)">Buy Item</button></article>
+      <article class="donation-card" tabindex="0"><img src="https://img.icons8.com/color/96/phone-tablet.png" alt="Samsung Smartphone" class="item-img" />
+        <h4>Samsung Galaxy Phone</h4>
+        <p class="donation-details">Category: Mobile Phones<br>Condition: New<br><strong>Price: $700</strong></p>
+        <button class="btn-main" onclick="openRequestInfoModal('Samsung Galaxy Phone', true)">Buy Item</button></article>
+    </div>
+  </section>
+
+  <section id="browse" class="page-section" tabindex="-1">
+    <div class="browse-section">
+      <h2>Browse Books</h2>
+      <div class="browse-filters">
+        <input type="search" placeholder="Search Book Title / Author / Category" />
+        <select>
+          <option>School</option>
+          <option>College</option>
+          <option>Engineering</option>
+          <option>Medical</option>
+          <option>Novels</option>
+          <option>Children</option>
+          <option>Self-help</option>
+          <option>Competitive Exams</option>
+          <option>Comics & Graphic Novels</option>
+        </select>
+        <select>
+          <option>All Conditions</option>
+          <option>New</option>
+          <option>Good</option>
+          <option>Used</option>
+        </select>
+      </div>
+      <div class="listing-list">
+        <article class="donation-card"><img src="https://img.icons8.com/color/96/book--v1.png" alt="Book" class="item-img" />
+          <h4>Handbook Of Mathematics</h4>
+          <p class="donation-details">Category: College<br>Condition: Used<br>Donor: Kavita Sharma</p>
+          <button class="btn-main">Request/Buy</button></article>
+        <article class="donation-card"><img src="https://img.icons8.com/color/96/novel.png" alt="Book" class="item-img" />
+          <h4>Wings Of Fire</h4>
+          <p class="donation-details">Category: Novels<br>Condition: New<br>Donor: Anonymous</p>
+          <button class="btn-main">Request/Buy</button></article>
+      </div>
+    </div>
+  </section>
+
+  <section id="profile" class="page-section" tabindex="-1">
+    <div class="profile-section">
+      <h2>Your Account</h2>
+      <p>Name, Email, Address, Orders, Donations.</p>
+      <button class="btn-main" onclick="showSection('orders')">Track Orders</button>
+      <button class="btn-main" onclick="showSection('donations')">View Donations</button>
+      <button class="btn-main" onclick="showSection('logout')">Logout</button>
+    </div>
+  </section>
+
+  <section id="orders" class="page-section" tabindex="-1">
+    <div class="form-card" style="max-width: 700px; margin-top: 1.5rem;">
+      <h2>Your Orders</h2>
+      <p>Here you can track your orders with order details and status.</p>
+      <button class="btn-main" onclick="showSection('profile')">Back to Account</button>
+    </div>
+  </section>
+
+  <section id="donations" class="page-section" tabindex="-1">
+    <div class="form-card" style="max-width: 700px; margin-top: 1.5rem;">
+      <h2>Your Donations</h2>
+      <p>View your donation history and related details.</p>
+      <button class="btn-main" onclick="showSection('profile')">Back to Account</button>
+    </div>
+  </section>
+
+  <section id="logout" class="page-section" tabindex="-1">
+    <div class="form-card" style="max-width: 700px; margin-top: 1.5rem; text-align: center;">
+      <h2>Logout</h2>
+      <p>You have been logged out successfully.</p>
+      <button class="btn-main" onclick="showSection('home')">Go to Home</button>
+    </div>
+  </section>
+
+  <section id="cart" class="page-section" tabindex="-1" aria-label="Cart Page">
+    <div class="form-card" style="max-width: 700px; margin-top: 1.5rem; text-align: center;">
+      <h2>Your Cart</h2>
+      <p>Your selected items will appear here.</p>
+      <button class="btn-main" onclick="alert('Checkout feature coming soon!')">Proceed to Checkout</button>
+    </div>
+  </section>
+
+  <section id="reviews" class="page-section" tabindex="-1">
+    <div class="testimonials-section">
+      <h2>Testimonials</h2>
+      <p>"Saved 1350 rupees buying used books in excellent condition!" – Rahul</p>
+      <p>"Great support and delivery service. Books for exams and classics all at one place." – Aakanksha</p>
+    </div>
+  </section>
+
+  <section id="impact" class="page-section" tabindex="-1">
+    <div class="impact-section">
+      <h2>Social Impact</h2>
+      <p>More than <strong>10 lakh+</strong> books delivered across 100% Indian pincodes. Thousands of donors and students impacted!</p>
+    </div>
+  </section>
+
+  <section id="about" class="page-section" tabindex="-1">
+    <div class="form-card" style="max-width: 700px; margin-top: 1.5rem;">
+      <h2>About Us</h2>
+      <p>Donation Portal connects donors and buyers with people in need, allowing donation or sale of items to help others and reduce waste. Join us to build a caring, sustainable community.</p>
+    </div>
+  </section>
+
+  <section id="contact" class="page-section" tabindex="-1">
+    <div class="form-card" style="max-width: 650px;">
+      <h2>Contact</h2>
+      <p>Questions? Email us at <a href="mailto:donate@example.com" style="color:var(--primary);">donate@example.com</a>.</p>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="footer-links">
+    <a href="#about" role="button" tabindex="0" onclick="showSection('about',event)">About</a>
+    <a href="#privacy" tabindex="0" role="link">Privacy Policy</a>
+    <a href="#terms" tabindex="0" role="link">Terms</a>
+  </div>
+  <div class="footer-social">
+    <span class="icon" title="Facebook" tabindex="0">&#x1F426;</span>
+    <span class="icon" title="Twitter" tabindex="0">&#x1F426;</span>
+    <span class="icon" title="Instagram" tabindex="0">&#x1F426;</span>
+  </div>
+  <div class="footer-copy">&copy; 2025 Donation Portal. All rights reserved.</div>
+</footer>
+
+<!-- Request Info Modal -->
+<div id="requestInfoModal" class="modal" aria-hidden="true" role="dialog" aria-modal="true">
+  <div class="modal-content">
+    <span class="close" role="button" aria-label="Close Request Info Modal" tabindex="0" onclick="closeRequestInfoModal()">&times;</span>
+    <h2>Send Request</h2>
+    <form id="requestInfoForm">
+      <p>Requesting: <strong id="requestedItemName"></strong></p>
+      <p id="paidLabel" style="color:#b22222; font-weight:bold; display:none;">This is a paid item, please confirm payment terms with the seller.</p>
+      <div class="form-group"><label for="requesterName">Your Name</label><input id="requesterName" name="requesterName" type="text" required /></div>
+      <div class="form-group"><label for="requesterEmail">Your Email</label><input id="requesterEmail" name="requesterEmail" type="email" required /></div>
+      <div class="form-group"><label for="requesterPhone">Phone Number</label><input id="requesterPhone" name="requesterPhone" type="tel" /></div>
+      <div class="form-group"><label for="requesterMessage">Message / Additional Info</label><textarea id="requesterMessage" name="requesterMessage" rows="3" placeholder="Write any message here..."></textarea></div>
+      <button type="submit" class="btn-main">Send Request</button>
+    </form>
+  </div>
+</div>
+
+<!-- Login Modal -->
+<div id="loginModal" class="modal" aria-hidden="true" role="dialog" aria-modal="true">
+  <div class="modal-content">
+    <span class="close" role="button" aria-label="Close Login Modal" tabindex="0" onclick="closeLoginModal()">&times;</span>
+    <h2>Login</h2>
+    <form id="loginForm">
+      <div class="form-group"><label for="loginName">Name</label><input id="loginName" name="loginName" type="text" placeholder="Enter your name" required></div>
+      <div class="form-group"><label for="loginEmail">Email</label><input id="loginEmail" name="loginEmail" type="email" placeholder="Enter your email" required></div>
+      <button type="submit" class="btn-main">Login</button>
+    </form>
+    <div class="switch-link">Don't have an account? <a href="#" onclick="switchToSignup(event)">Sign Up here</a></div>
+  </div>
+</div>
+
+<!-- Signup Modal -->
+<div id="signupModal" class="modal" aria-hidden="true" role="dialog" aria-modal="true">
+  <div class="modal-content">
+    <span class="close" role="button" aria-label="Close Sign Up Modal" tabindex="0" onclick="closeSignupModal()">&times;</span>
+    <h2>Sign Up</h2>
+    <form id="signupForm">
+      <div class="form-group"><label for="signupFullName">Full Name</label><input id="signupFullName" name="signupFullName" type="text" placeholder="Enter your full name" required></div>
+      <div class="form-group"><label for="signupEmail">Email</label><input id="signupEmail" name="signupEmail" type="email" placeholder="Enter your email" required></div>
+      <div class="form-group"><label for="signupPassword">Password</label><input id="signupPassword" name="signupPassword" type="password" placeholder="Create a password" required minlength="6"></div>
+      <div class="form-group"><label for="signupConfirmPassword">Confirm Password</label><input id="signupConfirmPassword" name="signupConfirmPassword" type="password" placeholder="Confirm your password" required minlength="6"></div>
+      <div class="form-group"><label for="signupPhone">Phone Number (Optional)</label><input id="signupPhone" name="signupPhone" type="tel" placeholder="Enter your phone number"></div>
+      <div class="form-group"><label><input type="checkbox" id="signupAgree" required /> I agree to the <a href="#" target="_blank">Terms & Conditions</a></label></div>
+      <button type="submit" class="btn-main">Sign Up</button>
+    </form>
+    <div class="switch-link">Already have an account? <a href="#" onclick="switchToLogin(event)">Login here</a></div>
+  </div>
+</div>
+
+<script>
+  // Navigation and Sections switching
+  function showSection(id, e) {
+    if(e) e.preventDefault();
+    document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+    const sec = document.getElementById(id);
+    if(sec) {
+      sec.classList.add('active');
+      sec.focus();
+    }
+    document.querySelectorAll('nav a').forEach(a => {
+      if (a.textContent.replace(/\s/g, '').toLowerCase() === id.toLowerCase()) a.classList.add('active');
+    });
+    window.scrollTo({top:0, behavior:'smooth'});
+    history.pushState(null, '', #${id});
+  }
+  window.addEventListener('load', () => showSection(location.hash.slice(1) || 'home'));
+  window.addEventListener('hashchange', () => showSection(location.hash.slice(1) || 'home'));
+
+  // Donation form price toggle
+  const paidOpt = document.getElementById('paid-option');
+  const priceGroup = document.getElementById('price-group');
+  paidOpt.onchange = (e) => {
+    if(e.target.value === 'paid'){
+      priceGroup.style.display = 'block';
+      priceGroup.querySelector('input').setAttribute('required', '');
+    } else {
+      priceGroup.style.display = 'none';
+      priceGroup.querySelector('input').removeAttribute('required');
+      priceGroup.querySelector('input').value = '';
+    }
+  };
+
+  // Request modal
+  const requestInfoModal = document.getElementById('requestInfoModal');
+  const requestedItemName = document.getElementById('requestedItemName');
+  const paidLabel = document.getElementById('paidLabel');
+  const requestForm = document.getElementById('requestInfoForm');
+  function openRequestInfoModal(itemName, isPaid) {
+    requestedItemName.textContent = itemName;
+    paidLabel.style.display = isPaid ? 'block' : 'none';
+    requestInfoModal.classList.add('active');
+    requestInfoModal.setAttribute('aria-hidden', 'false');
+    requestInfoModal.querySelector('#requesterName').focus();
+  }
+  function closeRequestInfoModal() {
+    requestInfoModal.classList.remove('active');
+    requestInfoModal.setAttribute('aria-hidden', 'true');
+  }
+  requestForm.onsubmit = e => {
+    e.preventDefault();
+    alert('Request sent! Donor/Seller will contact you soon.');
+    closeRequestInfoModal();
+    requestForm.reset();
+  };
+  requestInfoModal.addEventListener('click', e => {
+    if(e.target === requestInfoModal) closeRequestInfoModal();
+  });
+  document.addEventListener('keydown', e => {
+    if(e.key === 'Escape' && requestInfoModal.classList.contains('active')) closeRequestInfoModal();
+  });
+
+  // Login modal control
+  const loginModal = document.getElementById('loginModal');
+  const loginBtn = document.getElementById('loginBtn');
+  const loginClose = loginModal.querySelector('.close');
+  const loginForm = document.getElementById('loginForm');
+  loginBtn.onclick = () => {
+    loginModal.classList.add('active');
+    loginModal.setAttribute('aria-hidden', 'false');
+    loginModal.querySelector('input#loginName').focus();
+  };
+  loginClose.onclick = () => {
+    loginModal.classList.remove('active');
+    loginModal.setAttribute('aria-hidden', 'true');
+    loginBtn.focus();
+  };
+  loginModal.addEventListener('click', e => { if(e.target === loginModal) loginClose.onclick(); });
+  document.addEventListener('keydown', e => { if(e.key === 'Escape' && loginModal.classList.contains('active')) loginClose.onclick(); });
+  loginForm.onsubmit = e => {
+    e.preventDefault();
+    alert('Login successful for ' + loginForm['loginName'].value);
+    loginClose.onclick();
+    loginForm.reset();
+  };
+
+  // Signup modal control
+  const signupModal = document.getElementById('signupModal');
+  const signupClose = signupModal.querySelector('.close');
+  const signupForm = document.getElementById('signupForm');
+  signupClose.onclick = () => {
+    signupModal.classList.remove('active');
+    signupModal.setAttribute('aria-hidden', 'true');
+  };
+  signupModal.addEventListener('click', e => { if(e.target === signupModal) signupClose.onclick(); });
+  document.addEventListener('keydown', e => { if(e.key === 'Escape' && signupModal.classList.contains('active')) signupClose.onclick(); });
+
+  signupForm.onsubmit = function(e){
+    e.preventDefault();
+    const fullName = signupForm.signupFullName.value.trim();
+    const email = signupForm.signupEmail.value.trim();
+    const password = signupForm.signupPassword.value;
+    const confirmPassword = signupForm.signupConfirmPassword.value;
+    const agree = signupForm.signupAgree.checked;
+
+    if(!fullName){
+      alert("Please enter your full name.");
+      return;
+    }
+    if(!email){
+      alert("Please enter your email.");
+      return;
+    }
+    if(password.length < 6){
+      alert("Password should be at least 6 characters.");
+      return;
+    }
+    if(password !== confirmPassword){
+      alert("Passwords do not match.");
+      return;
+    }
+    if(!agree){
+      alert("You must agree to the Terms & Conditions.");
+      return;
+    }
+    alert("Sign Up successful for " + fullName + " (" + email + ")");
+    signupClose.onclick();
+    signupForm.reset();
+  };
+
+  function switchToSignup(event){
+    event.preventDefault();
+    closeLoginModal();
+    openSignupModal();
+  }
+  function switchToLogin(event){
+    event.preventDefault();
+    closeSignupModal();
+    openLoginModal();
+  }
+  function openLoginModal(){
+    loginModal.classList.add('active');
+    loginModal.setAttribute('aria-hidden','false');
+    loginModal.querySelector('input#loginName').focus();
+  }
+  function closeLoginModal(){
+    loginModal.classList.remove('active');
+    loginModal.setAttribute('aria-hidden','true');
+    loginBtn.focus();
+  }
+  function openSignupModal(){
+    signupModal.classList.add('active');
+    signupModal.setAttribute('aria-hidden','false');
+    signupModal.querySelector('input#signupFullName').focus();
+  }
+  function closeSignupModal(){
+    signupModal.classList.remove('active');
+    signupModal.setAttribute('aria-hidden','true');
+    loginBtn.focus();
+  }
+
+  // Dummy submit handlers to prevent reload
+  function submitDonation(e) {
+    e.preventDefault();
+    alert('Thank you for your donation submission!');
+    e.target.reset();
+  }
+  function submitRequest(e) {
+    e.preventDefault();
+    alert('Your request has been submitted!');
+    e.target.reset();
+  }
+
+  // Listings tabs switching
+  const tabDonated = document.getElementById('tabDonated');
+  const tabPaid = document.getElementById('tabPaid');
+  const donatedItems = document.getElementById('donatedItems');
+  const paidItems = document.getElementById('paidItems');
+
+  tabDonated.addEventListener('click', () => {
+    tabDonated.classList.add('active');
+    tabDonated.setAttribute('aria-selected', 'true');
+
+    tabPaid.classList.remove('active');
+    tabPaid.setAttribute('aria-selected', 'false');
+
+    donatedItems.style.display = 'flex';
+    paidItems.style.display = 'none';
+  });
+
+  tabPaid.addEventListener('click', () => {
+    tabPaid.classList.add('active');
+    tabPaid.setAttribute('aria-selected', 'true');
+
+    tabDonated.classList.remove('active');
+    tabDonated.setAttribute('aria-selected', 'false');
+
+    paidItems.style.display = 'flex';
+    donatedItems.style.display = 'none';
+  });
+</script>
+</body>
+</html>
